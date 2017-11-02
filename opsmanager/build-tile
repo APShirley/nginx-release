@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+curl -L https://github.com/cloudfoundry-community/nginx-release/releases/download/v1.12.2/nginx-1.12.2.tgz \
+  -o releases/nginx.tgz
+
+zip -r "/tmp/nginx-tile.pivotal" metadata releases
