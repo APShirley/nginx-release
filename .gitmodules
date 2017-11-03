@@ -1,0 +1,4 @@
+[submodule "nginx-release"]
+	path = nginx-release
+	url = https://github.com/cloudfoundry-community/nginx-release.git
+	branch = master

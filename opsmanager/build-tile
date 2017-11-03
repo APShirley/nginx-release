@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
+
+set -ex
+
+curl -L https://github.com/cloudfoundry-community/nginx-release/releases/download/v1.12.2/nginx-1.12.2.tgz \
+  -o releases/nginx.tgz
+
+PIV_FILE=/tmp/nginx-tile.pivotal
+
+echo creating $PIV_FILE
+zip -r "$PIV_FILE" metadata releases
