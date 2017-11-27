@@ -106,12 +106,24 @@ job_types:
         type: text
         configurable: true
         default: |
-          #!/bin/bash -ex
-          mkdir -p /var/vcap/packages/nginx/proxy_temp
-          NGINX_DIR=/var/vcap/store/nginx
-          mkdir -p $NGINX_DIR/document_root
-          echo "<html><title>Welcome to Ops Manager + nginx</title><body><h1>Welcome to Ops Manager + nginx</h1></body></html>" > $NGINX_DIR/document_root/index.html
-          chown -R vcap:vcap $NGINX_DIR
+          #!/usr/bin/perl -I/
+          # Use perl, not bash, in the pre_start to workaround Ops Manager's
+          # insertion of CR-LF (0x0d 0x0a, ^M^J) after every line. It breaks
+          # bash scripts. The `-I/` is necessary to avoid
+          # `/usr/bin/perl^M: bad interpreter: No such file or directory`
+          # `-I/` modifies @INC and should have no harmful side effects.
+          # story: #153073790
+          use File::Path qw(make_path);
+
+          make_path("/var/vcap/packages/nginx/proxy_temp");
+          make_path("/var/vcap/store/nginx/document_root");
+
+          open(my $fh, '>', "/var/vcap/store/nginx/document_root/index.html") or die "Could not open index.html $!";
+          print $fh "<html><title>Welcome to Ops Manager + nginx</title><body><h1>Welcome to Ops Manager + nginx</h1></body></html>";
+          close $fh;
+          my $uid = getpwnam "vcap";
+          my $gid = getgrnam "vcap";
+          chown $uid, $gid, "/var/vcap/store/nginx/", "/var/vcap/store/nginx/document_root";
       - name: ssl_key_and_cert
         type: rsa_cert_credentials
         configurable: true
