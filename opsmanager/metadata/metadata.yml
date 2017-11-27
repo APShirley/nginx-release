@@ -1,8 +1,8 @@
 ---
 name: nginx
-product_version: "0.0.1"
+product_version: "1.12.2.0"
 minimum_version_for_upgrade: "0"
-metadata_version: "2.0"
+metadata_version: "1.12"
 label: 'Ops Manager: nginx HTTP server'
 description: nginx HTTP server
 rank: 1
